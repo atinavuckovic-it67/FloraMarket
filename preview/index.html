@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FloraMarket - Mobilne Informacione Tehnologije (Live Preview)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #2e7d32;
+      --primary-dark: #1b5e20;
+      --primary-light: #e8f5e9;
+      --accent: #e91e63;
+      --bg-light: #f9fbf9;
+      --surface-light: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --card-shadow: 0 4px 14px rgba(0,0,0,0.06);
+    }
+
+    body.dark-mode {
+      --bg-light: #121814;
+      --surface-light: #1b241e;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --border-color: #2a392e;
+      --primary-light: #1f3524;
+      --card-shadow: 0 4px 14px rgba(0,0,0,0.3);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: #0f172a;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      color: #334155;
+    }
+
+    .preview-wrapper {
+      display: flex;
+      flex-direction: row;
+      gap: 30px;
+      align-items: flex-start;
+      max-width: 1100px;
+      width: 100%;
+    }
+
+    .project-info-sidebar {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 28px;
+      border-radius: 24px;
+      color: white;
+    }
+
+    .project-info-sidebar h1 {
+      font-size: 26px;
+      font-weight: 700;
+      color: #4ade80;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .project-info-sidebar h2 {
+      font-size: 15px;
+      font-weight: 400;
+      color: #cbd5e1;
+      margin-bottom: 20px;
+    }
+
+    .info-badge {
+      display: inline-block;
+      background: rgba(74, 222, 128, 0.15);
+      color: #4ade80;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .role-switcher-box {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 16px;
+      margin: 20px 0;
+    }
+
+    .role-switcher-box h3 {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #94a3b8;
+      margin-bottom: 12px;
+    }
+
+    .role-btn-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .role-btn {
+      flex: 1;
+      min-width: 90px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white;
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .role-btn.active {
+      background: #2e7d32;
+      border-color: #4ade80;
+      color: #ffffff;
+      box-shadow: 0 0 15px rgba(74, 222, 128, 0.4);
+    }
+
+    .feature-list {
+      list-style: none;
+      margin-top: 15px;
+      font-size: 13px;
+      color: #cbd5e1;
+    }
+
+    .feature-list li {
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .feature-list i {
+      color: #4ade80;
+    }
+
+    /* Mobile Device Frame */
+    .mobile-phone {
+      width: 380px;
+      height: 760px;
+      background: #000;
+      border-radius: 48px;
+      padding: 12px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 0 4px #262626;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .phone-screen {
+      width: 100%;
+      height: 100%;
+      background: var(--bg-light);
+      border-radius: 38px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      color: var(--text-main);
+    }
+
+    /* Notch */
+    .notch {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 24px;
+      background: #000;
+      border-bottom-left-radius: 14px;
+      border-bottom-right-radius: 14px;
+      z-index: 1000;
+    }
+
+    /* Status Bar */
+    .status-bar {
+      height: 38px;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-main);
+      padding-bottom: 6px;
+    }
+
+    /* Top App Bar */
+    .app-header {
+      padding: 10px 16px;
+      background: var(--surface-light);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .brand-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .role-indicator {
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .role-guest { background: #fed7aa; color: #9a3412; }
+    .role-user { background: #bbf7d0; color: #166534; }
+    .role-admin { background: #fecaca; color: #991b1b; }
+
+    /* Screen Views Container */
+    .app-body {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    .screen-view {
+      display: none;
+      padding-bottom: 20px;
+      min-height: 100%;
+    }
+
+    .screen-view.active {
+      display: block;
+      animation: fadeIn 0.25s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Bottom Navigation Bar */
+    .bottom-nav {
+      height: 60px;
+      background: var(--surface-light);
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 100;
+      box-shadow: 0 -4px 10px rgba(0,0,0,0.03);
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 10.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      position: relative;
+      transition: color 0.2s;
+    }
+
+    .nav-item i {
+      font-size: 18px;
+      margin-bottom: 2px;
+    }
+
+    .nav-item.active {
+      color: var(--primary);
+    }
+
+    .badge-count {
+      position: absolute;
+      top: -4px;
+      right: 2px;
+      background: var(--accent);
+      color: white;
+      font-size: 9px;
+      font-weight: 800;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Weather Widget */
+    .weather-widget {
+      margin: 12px 16px;
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+      color: #1e3a24;
+      box-shadow: var(--card-shadow);
+      position: relative;
+    }
+
+    body.dark-mode .weather-widget {
+      background: linear-gradient(135deg, #1b3521, #122416);
+      color: #e2f1e5;
+    }
+
+    .weather-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .weather-temp {
+      font-weight: 700;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .weather-humidity {
+      background: rgba(255, 255, 255, 0.7);
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    body.dark-mode .weather-humidity {
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+    }
+
+    .weather-tip {
+      font-size: 12px;
+      line-height: 1.4;
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .weather-tip i {
+      color: var(--primary);
+      margin-top: 2px;
+    }
+
+    /* Categories Horizontal Scroll */
+    .section-title {
+      padding: 12px 16px 6px;
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .category-chips {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 6px 16px;
+      scrollbar-width: none;
+    }
+
+    .category-chips::-webkit-scrollbar { display: none; }
+
+    .chip {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      background: var(--surface-light);
+      border: 1px solid var(--border-color);
+      white-space: nowrap;
+      cursor: pointer;
+      color: var(--text-main);
+    }
+
+    .chip.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    /* Horizontal Florists Scroll */
+    .florists-scroll {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding: 6px 16px;
+      scrollbar-width: none;
+    }
+
+    .florists-scroll::-webkit-scrollbar { display: none; }
+
+    .florist-mini-card {
+      width: 200px;
+      background: var(--surface-light);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: var(--card-shadow);
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    .florist-mini-card img {
+      width: 100%;
+      height: 95px;
+      object-fit: cover;
+    }
+
+    .florist-mini-info {
+      padding: 8px 10px;
+    }
+
+    .florist-mini-info h4 {
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .florist-mini-info p {
+      font-size: 10.5px;
+      color: var(--text-muted);
+    }
+
+    /* Product Grid */
+    .products-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      padding: 8px 16px;
+    }
+
+    .product-card {
+      background: var(--surface-light);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: var(--card-shadow);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+
+    .product-card:active {
+      transform: scale(0.98);
+    }
+
+    .product-img-wrap {
+      position: relative;
+      height: 120px;
+      background: #e2e8f0;
+    }
+
+    .product-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .fav-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: rgba(255, 255, 255, 0.9);
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: #94a3b8;
+      cursor: pointer;
+    }
+
+    .fav-btn.is-fav {
+      color: var(--accent);
+    }
+
+    .product-details {
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      justify-content: space-between;
+    }
+
+    .product-title {
+      font-size: 12.5px;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 4px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .product-price {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .add-to-cart-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 6px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    /* Product Details Modal/Overlay */
+    .details-overlay {
+      position: absolute;
+      inset: 0;
+      background: var(--bg-light);
+      z-index: 200;
+      display: none;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .details-overlay.active {
+      display: flex;
+    }
+
+    .details-hero {
+      position: relative;
+      height: 220px;
+    }
+
+    .details-hero img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .back-btn-float {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      background: rgba(0,0,0,0.5);
+      color: white;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .details-body {
+      padding: 16px;
+      flex: 1;
+    }
+
+    .care-box {
+      background: var(--primary-light);
+      border-radius: 12px;
+      padding: 12px;
+      margin: 14px 0;
+      border-left: 4px solid var(--primary);
+    }
+
+    .care-box h5 {
+      font-size: 12px;
+      color: var(--primary);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .care-box p {
+      font-size: 11.5px;
+      line-height: 1.4;
+    }
+
+    /* Cart Screen Styles */
+    .cart-item {
+      display: flex;
+      align-items: center;
+      padding: 10px 14px;
+      background: var(--surface-light);
+      margin: 8px 16px;
+      border-radius: 14px;
+      box-shadow: var(--card-shadow);
+      gap: 12px;
+    }
+
+    .cart-item img {
+      width: 60px;
+      height: 60px;
+      border-radius: 10px;
+      object-fit: cover;
+    }
+
+    .cart-item-info {
+      flex: 1;
+    }
+
+    .cart-item-info h4 {
+      font-size: 12.5px;
+      font-weight: 700;
+    }
+
+    .cart-item-info p {
+      font-size: 12px;
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .stepper {
+      display: flex;
+      align-items: center;
+      background: rgba(0,0,0,0.05);
+      border-radius: 12px;
+      padding: 2px;
+    }
+
+    .step-btn {
+      width: 24px;
+      height: 24px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-weight: bold;
+      color: var(--text-main);
+    }
+
+    .step-val {
+      padding: 0 6px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .checkout-footer {
+      background: var(--surface-light);
+      padding: 14px 16px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .primary-btn {
+      width: 100%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    /* Admin Panel styles */
+    .admin-stat-card {
+      background: var(--surface-light);
+      padding: 12px;
+      border-radius: 12px;
+      box-shadow: var(--card-shadow);
+      margin: 8px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .toast {
+      position: absolute;
+      top: 50px;
+      left: 20px;
+      right: 20px;
+      background: #1e293b;
+      color: white;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 12px;
+      z-index: 9999;
+      display: none;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      animation: slideDown 0.3s;
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="preview-wrapper">
+    <!-- Project Description & Role Controls -->
+    <div class="project-info-sidebar">
+      <div class="info-badge">Fakultet tehničkih nauka, Novi Sad</div>
+      <h1><i class="fa-solid fa-seedling"></i> FloraMarket</h1>
+      <h2>Mobilne informacione tehnologije • Atina Vučković IT67/2024</h2>
+      
+      <p style="font-size: 13px; color: #94a3b8; line-height: 1.5;">
+        Digitalna platforma za lokalne cvećare sa integracijom <strong>OpenWeather API</strong>-ja za savete o nezi biljaka i <strong>Stripe PaymentIntent</strong> mehanizma za kupovinu.
+      </p>
+
+      <div class="role-switcher-box">
+        <h3>Prebacivanje uloge (Specifikacija 3.2):</h3>
+        <div class="role-btn-group">
+          <button class="role-btn active" id="btn-role-guest" onclick="switchRole('guest')">
+            <i class="fa-regular fa-user"></i>
+            1. Gost
+          </button>
+          <button class="role-btn" id="btn-role-user" onclick="switchRole('user')">
+            <i class="fa-solid fa-bag-shopping"></i>
+            2. Kupac
+          </button>
+          <button class="role-btn" id="btn-role-admin" onclick="switchRole('admin')">
+            <i class="fa-solid fa-shield-halved"></i>
+            3. Admin
+          </button>
+        </div>
+      </div>
+
+      <ul class="feature-list">
+        <li><i class="fa-solid fa-cloud-sun"></i> <strong>OpenWeather API:</strong> Dinamički savet za negu na osnovu temperature i vlage</li>
+        <li><i class="fa-solid fa-credit-card"></i> <strong>Stripe API:</strong> Kartično plaćanje preko PaymentIntent toka</li>
+        <li><i class="fa-solid fa-database"></i> <strong>Firestore NoSQL:</strong> Kolekcije florists, products, users, orders</li>
+        <li><i class="fa-solid fa-sliders"></i> <strong>CRUD operacije:</strong> Dodavanje, izmena i brisanje artikala</li>
+        <li><i class="fa-solid fa-moon"></i> <strong>Svetla/Tamna tema:</strong> Mogućnost prebacivanja režima</li>
+      </ul>
+    </div>
+
+    <!-- Interactive Phone Screen -->
+    <div class="mobile-phone">
+      <div class="notch"></div>
+      
+      <div class="phone-screen" id="phoneScreen">
+        <div class="toast" id="toastMsg">Obaveštenje</div>
+
+        <!-- Status Bar -->
+        <div class="status-bar">
+          <span id="currentTime">12:30</span>
+          <span><i class="fa-solid fa-wifi"></i> <i class="fa-solid fa-battery-full"></i></span>
+        </div>
+
+        <!-- App Header -->
+        <div class="app-header">
+          <div class="brand-title">
+            <i class="fa-solid fa-spa"></i> FloraMarket
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="role-indicator role-guest" id="headerRoleBadge">Gost</span>
+            <i class="fa-solid fa-moon" style="cursor: pointer; font-size: 14px;" onclick="toggleDarkMode()"></i>
+          </div>
+        </div>
+
+        <!-- Body Views -->
+        <div class="app-body">
+          <!-- 1. Home Screen -->
+          <div class="screen-view active" id="view-home">
+            <div class="weather-widget">
+              <div class="weather-header">
+                <div class="weather-temp">
+                  <i class="fa-solid fa-sun" style="color: #f59e0b;"></i>
+                  <span>Novi Sad • 26°C</span>
+                </div>
+                <div class="weather-humidity">
+                  <i class="fa-solid fa-droplet" style="color: #0284c7;"></i> 52% vlaga
+                </div>
+              </div>
+              <div class="weather-tip">
+                <i class="fa-solid fa-leaf"></i>
+                <span><strong>Savet za biljke:</strong> Umereno toplo vreme. Sobnim biljkama prija provetravanje, a buketima u vazi promenite vodu.</span>
+              </div>
+            </div>
+
+            <!-- Categories -->
+            <div class="section-title">
+              <span>Kategorije</span>
+            </div>
+            <div class="category-chips">
+              <div class="chip active" onclick="filterCategory('Sve', this)">Sve</div>
+              <div class="chip" onclick="filterCategory('Buketi', this)">Buketi</div>
+              <div class="chip" onclick="filterCategory('Sobno cveće', this)">Sobno cveće</div>
+              <div class="chip" onclick="filterCategory('Sukulenti', this)">Sukulenti</div>
+            </div>
+
+            <!-- Preporučene cvećare -->
+            <div class="section-title">
+              <span>Preporučene cvećare</span>
+              <span style="font-size: 11px; color: var(--text-muted);">Novi Sad</span>
+            </div>
+            <div class="florists-scroll">
+              <div class="florist-mini-card" onclick="openShop('Cvećara „Lotos Liman”')">
+                <img src="https://images.unsplash.com/photo-1526047932273-341f2a7631f9?auto=format&fit=crop&w=400&q=80" alt="Lotos">
+                <div class="florist-mini-info">
+                  <h4>Cvećara „Lotos Liman”</h4>
+                  <p>Liman 2 • 4.9 ★</p>
+                </div>
+              </div>
+              <div class="florist-mini-card" onclick="openShop('Botanika Centar')">
+                <img src="https://images.unsplash.com/photo-1470058869958-2a77ade41c02?auto=format&fit=crop&w=400&q=80" alt="Botanika">
+                <div class="florist-mini-info">
+                  <h4>Botanika Art & Plants</h4>
+                  <p>Zmaj Jovina • 4.8 ★</p>
+                </div>
+              </div>
+              <div class="florist-mini-card" onclick="openShop('Dunavski Cvet')">
+                <img src="https://images.unsplash.com/photo-1519378058457-4c29a0a2efac?auto=format&fit=crop&w=400&q=80" alt="Dunav">
+                <div class="florist-mini-info">
+                  <h4>Dunavski Cvet</h4>
+                  <p>Petrovaradin • 4.7 ★</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Ponuda Cveća -->
+            <div class="section-title">
+              <span>Ponuda cveća i biljaka</span>
+            </div>
+            <div class="products-grid" id="productsGrid">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- 2. Shops Screen -->
+          <div class="screen-view" id="view-shops">
+            <div class="section-title"><span>Sve partnerske cvećare</span></div>
+            <div id="shopsFullList" style="padding: 0 16px;"></div>
+          </div>
+
+          <!-- 3. Wishlist Screen -->
+          <div class="screen-view" id="view-wishlist">
+            <div class="section-title"><span>Moja lista želja</span></div>
+            <div id="wishlistContainer" class="products-grid"></div>
+          </div>
+
+          <!-- 4. Cart Screen -->
+          <div class="screen-view" id="view-cart">
+            <div class="section-title"><span>Vaša korpa</span></div>
+            <div id="cartItemsContainer"></div>
+            <div class="checkout-footer" id="cartFooter" style="display: none;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 13px;">
+                <span>Iznos artikala:</span>
+                <strong id="cartSubtotal">0 RSD</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 13px;">
+                <span>Dostava (Novi Sad):</span>
+                <strong id="cartDelivery">350 RSD</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between; margin-bottom: 14px; font-size: 15px;">
+                <span>Ukupno za uplatu:</span>
+                <strong style="color: var(--primary); font-size: 18px;" id="cartTotal">0 RSD</strong>
+              </div>
+              <button class="primary-btn" onclick="openCheckout()">
+                <i class="fa-solid fa-credit-card"></i> Nastavi na Stripe naplatu
+              </button>
+            </div>
+          </div>
+
+          <!-- 5. Profile Screen -->
+          <div class="screen-view" id="view-profile">
+            <div style="text-align: center; padding: 20px 16px;">
+              <div style="width: 70px; height: 70px; border-radius: 50%; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 10px;">
+                <i class="fa-regular fa-user" id="profileIcon"></i>
+              </div>
+              <h3 id="profileName" style="font-size: 16px;">Gost Korisnik</h3>
+              <p id="profileEmail" style="font-size: 12px; color: var(--text-muted);">Niste prijavljeni na nalog</p>
+            </div>
+
+            <div style="padding: 0 16px;">
+              <div class="admin-stat-card" style="cursor: pointer;" onclick="toggleDarkMode()">
+                <span><i class="fa-solid fa-moon"></i> Tamni režim</span>
+                <i class="fa-solid fa-chevron-right" style="font-size: 12px; color: var(--text-muted);"></i>
+              </div>
+
+              <div id="adminPanelEntry" class="admin-stat-card" style="display: none; cursor: pointer; border: 1px solid #f87171;" onclick="openAdminView()">
+                <span style="color: #dc2626; font-weight: 700;"><i class="fa-solid fa-shield-halved"></i> Administratorski Panel</span>
+                <i class="fa-solid fa-chevron-right" style="font-size: 12px; color: #dc2626;"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- 6. Admin Panel View -->
+          <div class="screen-view" id="view-admin">
+            <div style="padding: 12px 16px; display: flex; align-items: center; gap: 8px;">
+              <i class="fa-solid fa-arrow-left" style="cursor: pointer;" onclick="showScreen('profile')"></i>
+              <strong style="font-size: 15px;">Admin Kontrolna Tabla</strong>
+            </div>
+
+            <div class="admin-stat-card">
+              <div>
+                <p style="font-size: 11px; color: var(--text-muted);">Ukupno artikala u ponudi</p>
+                <h3 id="adminProductCount">7</h3>
+              </div>
+              <button class="primary-btn" style="width: auto; padding: 6px 12px; font-size: 11px;" onclick="promptAddProduct()">
+                <i class="fa-solid fa-plus"></i> Dodaj cveće (Create)
+              </button>
+            </div>
+
+            <div class="section-title"><span>Inventar cveća (CRUD)</span></div>
+            <div id="adminProductsList" style="padding: 0 16px;"></div>
+          </div>
+        </div>
+
+        <!-- Product Details Overlay -->
+        <div class="details-overlay" id="productDetailsOverlay">
+          <div class="details-hero">
+            <img id="detailsImg" src="" alt="">
+            <div class="back-btn-float" onclick="closeDetails()">
+              <i class="fa-solid fa-arrow-left"></i>
+            </div>
+          </div>
+          <div class="details-body">
+            <span id="detailsCat" style="font-size: 11px; font-weight: 700; color: var(--primary); text-transform: uppercase;">Buketi</span>
+            <h2 id="detailsTitle" style="font-size: 18px; margin: 4px 0 8px;">Naziv</h2>
+            <h3 id="detailsPrice" style="font-size: 20px; color: var(--primary); margin-bottom: 12px;">0 RSD</h3>
+            <p id="detailsDesc" style="font-size: 13px; line-height: 1.5; color: var(--text-muted);"></p>
+
+            <div class="care-box">
+              <h5><i class="fa-solid fa-leaf"></i> Uputstvo za održavanje:</h5>
+              <p id="detailsCare"></p>
+            </div>
+
+            <div style="margin-top: 24px;">
+              <button class="primary-btn" id="detailsAddBtn" onclick="addToCartFromDetails()">
+                <i class="fa-solid fa-bag-shopping"></i> Dodaj u korpu
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+          <div class="nav-item active" onclick="showScreen('home')">
+            <i class="fa-solid fa-house"></i>
+            <span>Početna</span>
+          </div>
+          <div class="nav-item" onclick="showScreen('shops')">
+            <i class="fa-solid fa-store"></i>
+            <span>Cvećare</span>
+          </div>
+          <div class="nav-item" onclick="showScreen('wishlist')">
+            <i class="fa-solid fa-heart"></i>
+            <span>Omiljeno</span>
+          </div>
+          <div class="nav-item" onclick="showScreen('cart')">
+            <i class="fa-solid fa-bag-shopping"></i>
+            <span class="badge-count" id="cartCountBadge" style="display: none;">0</span>
+            <span>Korpa</span>
+          </div>
+          <div class="nav-item" onclick="showScreen('profile')">
+            <i class="fa-solid fa-user"></i>
+            <span>Profil</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // State
+    let currentRole = 'guest'; // 'guest', 'user', 'admin'
+    let currentCategory = 'Sve';
+    let wishlist = ['p1', 'p2'];
+    let cart = [];
+    let selectedProduct = null;
+
+    // Initial products database
+    let products = [
+      {
+        id: 'p1',
+        title: 'Buket Crvenih Ruža „Prestige”',
+        price: 4500,
+        category: 'Buketi',
+        shop: 'Cvećara „Lotos Liman”',
+        image: 'https://images.unsplash.com/photo-1582794543139-8ac9cb0f7b11?auto=format&fit=crop&w=600&q=80',
+        care: 'Menjati vodu na 2 dana, skratiti stabljike pod uglom od 45° i držati dalje od direktnog sunca.',
+        desc: '15 prvoklasnih ekvadorskih crvenih ruža sa eukaliptusom u elegantnom pakovanju.'
+      },
+      {
+        id: 'p2',
+        title: 'Monstera Deliciosa (Sobna džungla)',
+        price: 3200,
+        category: 'Sobno cveće',
+        shop: 'Botanika Art & Plants',
+        image: 'https://images.unsplash.com/photo-1614594975525-e45190c55d0b?auto=format&fit=crop&w=600&q=80',
+        care: 'Voli svetla mesta bez direktnog podnevnog sunca. Zalivati kada se površinski sloj zemlje prosuši.',
+        desc: 'Tropska sobna lepotica sa karakterističnim prorezima na listovima.'
+      },
+      {
+        id: 'p3',
+        title: 'Kraljevska Orhideja Phalaenopsis',
+        price: 2800,
+        category: 'Sobno cveće',
+        shop: 'Cvećara „Lotos Liman”',
+        image: 'https://images.unsplash.com/photo-1525310072745-f49212b5ac6d?auto=format&fit=crop&w=600&q=80',
+        care: 'Potapanje saksije u mlaku vodu jednom nedeljno na 15 minuta. Držati na svetlom prozoru.',
+        desc: 'Bela orhideja sa dve cvetne grane u ukrasnoj keramičkoj saksiji.'
+      },
+      {
+        id: 'p4',
+        title: 'Prolećni Buket Božura i Eustoma',
+        price: 3800,
+        category: 'Buketi',
+        shop: 'Dunavski Cvet',
+        image: 'https://images.unsplash.com/photo-1561181286-d3fee7d55364?auto=format&fit=crop&w=600&q=80',
+        care: 'Držati na prohladnom mestu. Dodati hranu za rezano cveće u vazu.',
+        desc: 'Nežna pastelna kombinacija roze božura i bele eustome u craft papiru.'
+      },
+      {
+        id: 'p5',
+        title: 'Keramički Mix Sukulenata',
+        price: 1950,
+        category: 'Sukulenti',
+        shop: 'Botanika Art & Plants',
+        image: 'https://images.unsplash.com/photo-1446071103084-c257b5f70672?auto=format&fit=crop&w=600&q=80',
+        care: 'Izuzetno malo vode: zalivati tek na svake 2-3 nedelje. Zahteva puno sunca.',
+        desc: 'Harmoničan set 4 vrste mini sukulenata u ručno rađenoj beloj posudi.'
+      }
+    ];
+
+    function showToast(msg) {
+      const toast = document.getElementById('toastMsg');
+      toast.innerText = msg;
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 2200);
+    }
+
+    function switchRole(role) {
+      currentRole = role;
+      document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('btn-role-' + role).classList.add('active');
+
+      const badge = document.getElementById('headerRoleBadge');
+      const profileName = document.getElementById('profileName');
+      const profileEmail = document.getElementById('profileEmail');
+      const adminEntry = document.getElementById('adminPanelEntry');
+
+      if (role === 'guest') {
+        badge.className = 'role-indicator role-guest';
+        badge.innerText = 'Gost';
+        profileName.innerText = 'Gost Korisnik';
+        profileEmail.innerText = 'Niste prijavljeni (korpa zaključana)';
+        adminEntry.style.display = 'none';
+        showToast('Prebačeno na ulogu: Gost (pregled ponude)');
+      } else if (role === 'user') {
+        badge.className = 'role-indicator role-user';
+        badge.innerText = 'Kupac';
+        profileName.innerText = 'Atina Vučković (Kupac)';
+        profileEmail.innerText = 'atina.it67@floramarket.rs';
+        adminEntry.style.display = 'none';
+        showToast('Prebačeno na ulogu: Registrovani kupac');
+      } else if (role === 'admin') {
+        badge.className = 'role-indicator role-admin';
+        badge.innerText = 'Admin';
+        profileName.innerText = 'Administrator Sistema';
+        profileEmail.innerText = 'admin@floramarket.rs';
+        adminEntry.style.display = 'flex';
+        showToast('Prebačeno na ulogu: Administrator (Pristup CRUD-u)');
+      }
+
+      renderProducts();
+      renderCart();
+    }
+
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+      showToast('Režim teme promenjen');
+    }
+
+    function showScreen(name) {
+      document.querySelectorAll('.screen-view').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+      const target = document.getElementById('view-' + name);
+      if (target) target.classList.add('active');
+
+      const navIndices = { 'home': 0, 'shops': 1, 'wishlist': 2, 'cart': 3, 'profile': 4 };
+      if (navIndices[name] !== undefined) {
+        document.querySelectorAll('.bottom-nav .nav-item')[navIndices[name]].classList.add('active');
+      }
+
+      if (name === 'cart') renderCart();
+      if (name === 'wishlist') renderWishlist();
+    }
+
+    function filterCategory(cat, el) {
+      currentCategory = cat;
+      document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      renderProducts();
+    }
+
+    function renderProducts() {
+      const grid = document.getElementById('productsGrid');
+      grid.innerHTML = '';
+
+      const filtered = currentCategory === 'Sve' 
+        ? products 
+        : products.filter(p => p.category === currentCategory);
+
+      filtered.forEach(p => {
+        const isFav = wishlist.includes(p.id);
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.onclick = (e) => {
+          if (!e.target.closest('.fav-btn') && !e.target.closest('.add-to-cart-btn')) {
+            openDetails(p);
+          }
+        };
+
+        card.innerHTML = `
+          <div class="product-img-wrap">
+            <img src="${p.image}" alt="${p.title}">
+            <div class="fav-btn ${isFav ? 'is-fav' : ''}" onclick="toggleFav('${p.id}')">
+              <i class="fa-solid fa-heart"></i>
+            </div>
+          </div>
+          <div class="product-details">
+            <div class="product-title">${p.title}</div>
+            <div class="product-price">${p.price} RSD</div>
+            <button class="add-to-cart-btn" onclick="addToCart('${p.id}')">
+              <i class="fa-solid fa-cart-plus"></i> U korpu
+            </button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function toggleFav(id) {
+      if (wishlist.includes(id)) {
+        wishlist = wishlist.filter(x => x !== id);
+        showToast('Uklonjeno iz omiljenih');
+      } else {
+        wishlist.push(id);
+        showToast('Dodato u listu želja ❤️');
+      }
+      renderProducts();
+      renderWishlist();
+    }
+
+    function addToCart(id) {
+      if (currentRole === 'guest') {
+        showToast('Kao gost ne možete dodavati u korpu. Prijavite se!');
+        return;
+      }
+
+      const p = products.find(x => x.id === id);
+      const existing = cart.find(x => x.product.id === id);
+      if (existing) {
+        existing.quantity += 1;
+      } else {
+        cart.push({ product: p, quantity: 1 });
+      }
+
+      updateCartBadge();
+      showToast(`Dodato u korpu: ${p.title}`);
+    }
+
+    function updateCartBadge() {
+      const totalCount = cart.reduce((s, i) => s + i.quantity, 0);
+      const badge = document.getElementById('cartCountBadge');
+      if (totalCount > 0) {
+        badge.innerText = totalCount;
+        badge.style.display = 'flex';
+      } else {
+        badge.style.display = 'none';
+      }
+    }
+
+    function renderCart() {
+      const container = document.getElementById('cartItemsContainer');
+      const footer = document.getElementById('cartFooter');
+
+      if (currentRole === 'guest') {
+        container.innerHTML = `
+          <div style="text-align: center; padding: 40px 20px;">
+            <i class="fa-solid fa-lock" style="font-size: 40px; color: #f59e0b; margin-bottom: 12px;"></i>
+            <h4 style="font-size: 15px;">Korpa je zaključana za goste</h4>
+            <p style="font-size: 12px; color: var(--text-muted); margin: 6px 0 16px;">
+              Prema specifikaciji projekta, neregistrovani korisnici moraju da se prijave za kupovinu.
+            </p>
+            <button class="primary-btn" onclick="switchRole('user')">Prijavi se kao Kupac</button>
+          </div>
+        `;
+        footer.style.display = 'none';
+        return;
+      }
+
+      if (cart.length === 0) {
+        container.innerHTML = `
+          <div style="text-align: center; padding: 40px 20px;">
+            <i class="fa-solid fa-basket-shopping" style="font-size: 40px; color: var(--text-muted); margin-bottom: 12px;"></i>
+            <h4>Vaša korpa je prazna</h4>
+            <p style="font-size: 12px; color: var(--text-muted);">Izaberite buket ili biljku sa početne strane.</p>
+          </div>
+        `;
+        footer.style.display = 'none';
+        return;
+      }
+
+      container.innerHTML = '';
+      let subtotal = 0;
+
+      cart.forEach(item => {
+        subtotal += item.product.price * item.quantity;
+        const div = document.createElement('div');
+        div.className = 'cart-item';
+        div.innerHTML = `
+          <img src="${item.product.image}" alt="">
+          <div class="cart-item-info">
+            <h4>${item.product.title}</h4>
+            <p>${item.product.price * item.quantity} RSD</p>
+          </div>
+          <div class="stepper">
+            <button class="step-btn" onclick="changeQty('${item.product.id}', -1)">-</button>
+            <span class="step-val">${item.quantity}</span>
+            <button class="step-btn" onclick="changeQty('${item.product.id}', 1)">+</button>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+
+      const delivery = subtotal >= 4000 ? 0 : 350;
+      document.getElementById('cartSubtotal').innerText = subtotal + ' RSD';
+      document.getElementById('cartDelivery').innerText = delivery === 0 ? 'Besplatno' : delivery + ' RSD';
+      document.getElementById('cartTotal').innerText = (subtotal + delivery) + ' RSD';
+      footer.style.display = 'block';
+    }
+
+    function changeQty(id, delta) {
+      const it = cart.find(x => x.product.id === id);
+      if (!it) return;
+      it.quantity += delta;
+      if (it.quantity <= 0) {
+        cart = cart.filter(x => x.product.id !== id);
+      }
+      updateCartBadge();
+      renderCart();
+    }
+
+    function openCheckout() {
+      showToast('Obrada Stripe PaymentIntent transakcije...');
+      setTimeout(() => {
+        cart = [];
+        updateCartBadge();
+        renderCart();
+        showToast('Uspešno plaćeno preko Stripe API-ja! Kreirana porudžbina.');
+      }, 1200);
+    }
+
+    function openDetails(p) {
+      selectedProduct = p;
+      document.getElementById('detailsImg').src = p.image;
+      document.getElementById('detailsCat').innerText = p.category;
+      document.getElementById('detailsTitle').innerText = p.title;
+      document.getElementById('detailsPrice').innerText = p.price + ' RSD';
+      document.getElementById('detailsDesc').innerText = p.desc;
+      document.getElementById('detailsCare').innerText = p.care;
+      document.getElementById('productDetailsOverlay').classList.add('active');
+    }
+
+    function closeDetails() {
+      document.getElementById('productDetailsOverlay').classList.remove('active');
+    }
+
+    function addToCartFromDetails() {
+      if (selectedProduct) {
+        addToCart(selectedProduct.id);
+        closeDetails();
+      }
+    }
+
+    function renderWishlist() {
+      const container = document.getElementById('wishlistContainer');
+      container.innerHTML = '';
+      const favs = products.filter(p => wishlist.includes(p.id));
+      if (favs.length === 0) {
+        container.innerHTML = '<p style="grid-column: 1/-1; text-align:center; padding: 20px; color: var(--text-muted);">Nemate sačuvanih omiljenih artikala.</p>';
+        return;
+      }
+      favs.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `
+          <div class="product-img-wrap">
+            <img src="${p.image}">
+          </div>
+          <div class="product-details">
+            <div class="product-title">${p.title}</div>
+            <div class="product-price">${p.price} RSD</div>
+            <button class="add-to-cart-btn" onclick="addToCart('${p.id}')">U korpu</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function openAdminView() {
+      document.getElementById('adminProductCount').innerText = products.length;
+      renderAdminProducts();
+      showScreen('admin');
+    }
+
+    function renderAdminProducts() {
+      const list = document.getElementById('adminProductsList');
+      list.innerHTML = '';
+      products.forEach(p => {
+        const div = document.createElement('div');
+        div.className = 'admin-stat-card';
+        div.innerHTML = `
+          <div>
+            <strong style="font-size: 13px;">${p.title}</strong>
+            <p style="font-size: 11px; color: var(--text-muted);">${p.price} RSD • ${p.category}</p>
+          </div>
+          <div>
+            <button style="border:none; background:none; color: #dc2626; cursor:pointer; padding: 6px;" onclick="deleteProduct('${p.id}')">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    function deleteProduct(id) {
+      if (confirm('Da li ste sigurni da želite da obrišete ovaj artikal iz Firestore baze?')) {
+        products = products.filter(p => p.id !== id);
+        renderAdminProducts();
+        renderProducts();
+        document.getElementById('adminProductCount').innerText = products.length;
+        showToast('Artikal uspešno obrisan (Delete operacija)');
+      }
+    }
+
+    function promptAddProduct() {
+      const title = prompt('Unesite naziv novog cveća:');
+      if (!title) return;
+      const price = prompt('Unesite cenu u RSD:', '2500');
+      const cat = prompt('Kategorija (Buketi, Sobno cveće, Sukulenti):', 'Buketi');
+
+      const newProd = {
+        id: 'p_' + Date.now(),
+        title: title,
+        price: parseInt(price) || 2500,
+        category: cat || 'Buketi',
+        shop: 'Cvećara „Lotos Liman”',
+        image: 'https://images.unsplash.com/photo-1561181286-d3fee7d55364?auto=format&fit=crop&w=600&q=80',
+        care: 'Redovno zalivanje i svetlo mesto.',
+        desc: 'Novi dodati artikal kroz admin panel.'
+      };
+
+      products.unshift(newProd);
+      renderAdminProducts();
+      renderProducts();
+      document.getElementById('adminProductCount').innerText = products.length;
+      showToast('Novi artikal dodat u bazu (Create operacija)');
+    }
+
+    // Init
+    renderProducts();
+  </script>
+</body>
+</html>
+
